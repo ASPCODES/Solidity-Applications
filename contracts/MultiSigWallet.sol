@@ -72,4 +72,29 @@ contract MultiSigWallet {
         require(!isConfirmed[_txIndex][msg.sender], "tx already confirmed");
         _;
     }
+
+    constructor(address[] memory _owners, uint256 _numConfirmationsRequired) {
+        require(_owners.length > 0, "Owners required");
+        require(
+            _numConfirmationsRequired > 0 &&
+                _numConfirmationsRequired <= _owners.length,
+            "invalid number of required confirmations"
+        );
+
+        for (uint256 i = 0; i < _owners.length; i++) {
+            address owner = _owners[i];
+
+            require(owner != address(0), "Invalid owner");
+            require(!isOwner[owner], "Owner is not unique");
+
+            isOwner[owner] = true;
+            owners.push(owner);
+        }
+
+        numConfirmationsRequired = _numConfirmationsRequired;
+    }
+
+    receive() external payable {
+        emit deposit(msg.sender, msg.value, address(this).balance);
+    }
 }
