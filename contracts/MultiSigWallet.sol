@@ -32,7 +32,7 @@ contract MultiSigWallet {
         uint256 value,
         bytes data
     );
-    event ConfirmTransacion(address indexed owner, uint256 indexed txIndex);
+    event ConfirmTransaction(address indexed owner, uint256 indexed txIndex);
     event RevokeConfirmation(address indexed owner, uint256 indexed txIndex);
     event ExecuteTransaction(address indexed owner, uint256 indexed txIndex);
 
@@ -131,7 +131,7 @@ contract MultiSigWallet {
         transaction.numConfirmations += 1;
         isConfirmed[_txIndex][msg.sender] = true;
 
-        emit ConfirmTransacion(msg.sender, _txIndex);
+        emit ConfirmTransaction(msg.sender, _txIndex);
     }
 
     function executeTransaction(
