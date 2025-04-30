@@ -21,6 +21,7 @@ contract ERC20 is IERC20 {
 
     address public owner;
 
+    // Restricted mint and burn using onlyOwner.
     modifier onlyOwner() {
         require(msg.sender == owner, "Not authorized");
         _;
@@ -36,6 +37,7 @@ contract ERC20 is IERC20 {
         address recipient,
         uint256 amount
     ) external returns (bool) {
+        // Added require checks for balance and allowance.
         require(balanceOf[msg.sender] >= amount, "Insufficient balance");
         balanceOf[msg.sender] -= amount;
         balanceOf[recipient] += amount;
@@ -64,6 +66,7 @@ contract ERC20 is IERC20 {
         return true;
     }
 
+    // Added check to avoid minting to or burning from address(0).
     function _mint(address to, uint256 amount) internal {
         require(to != address(0), "Cannot mint to zero address");
         balanceOf[to] += amount;
