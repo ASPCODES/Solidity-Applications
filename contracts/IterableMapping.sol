@@ -5,6 +5,7 @@ pragma solidity ^0.8.28;
 1. Library
 2. Mapping
 3. Structs
+4. Iterable mapping
 */
 
 library IterableMapping {
