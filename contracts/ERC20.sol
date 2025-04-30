@@ -3,7 +3,7 @@ pragma solidity ^0.8.28;
 
 import "./IERC20.sol";
 
-abstract contract ERC20 is IERC20 {
+contract ERC20 is IERC20 {
     // because the ERC20 contract does not implement all the functions defined in the IERC20 interface. To fix this, you need to either mark the contract as abstract.
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(
@@ -19,6 +19,13 @@ abstract contract ERC20 is IERC20 {
     string public symbol;
     uint8 public decimals;
 
+    address public owner;
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not authorized");
+        _;
+    }
+
     constructor(string memory _name, string memory _symbol, uint8 _decimals) {
         name = _name;
         symbol = _symbol;
@@ -29,6 +36,7 @@ abstract contract ERC20 is IERC20 {
         address recipient,
         uint256 amount
     ) external returns (bool) {
+        require(balanceOf[msg.sender] >= amount, "Insufficient balance");
         balanceOf[msg.sender] -= amount;
         balanceOf[recipient] += amount;
         emit Transfer(msg.sender, recipient, amount);
@@ -46,6 +54,9 @@ abstract contract ERC20 is IERC20 {
         address recipient,
         uint256 amount
     ) external returns (bool) {
+        require(balanceOf[sender] >= amount, "Insufficient balance");
+        require(allowance[sender][msg.sender] >= amount, "Allowance exceeded");
+
         allowance[sender][msg.sender] -= amount;
         balanceOf[sender] -= amount;
         balanceOf[recipient] += amount;
@@ -54,12 +65,14 @@ abstract contract ERC20 is IERC20 {
     }
 
     function _mint(address to, uint256 amount) internal {
+        require(to != address(0), "Cannot mint to zero address");
         balanceOf[to] += amount;
         totalSupply += amount;
         emit Transfer(address(0), to, amount);
     }
 
     function _burn(address from, uint256 amount) internal {
+        require(balanceOf[from] >= amount, "Insufficient balance to burn");
         balanceOf[from] -= amount;
         totalSupply -= amount;
         emit Transfer(from, address(0), amount);
