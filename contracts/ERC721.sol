@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
+//  overide concept which uses parent contract function in it's own contract.(Inheritance)
 interface IERC165 {
     function supportsInterface(bytes4 interfaceID) external view returns (bool);
 }
