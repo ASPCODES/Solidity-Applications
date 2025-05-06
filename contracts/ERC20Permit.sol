@@ -20,6 +20,8 @@ abstract contract ERC20 {
     uint256 public totalSupply;
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
+
+    // EIP-2612 State
     uint256 internal immutable INITIAL_CHAIN_ID;
     bytes32 internal immutable INITIAL_DOMAIN_SEPARATOR;
     mapping(address => uint256) public nonces;
@@ -63,6 +65,10 @@ abstract contract ERC20 {
         emit Transfer(from, to, amount);
         return true;
     }
+
+    // Allows an address (owner) to approve a spender via off-chain signature, no ETH or gas needed by the user.
+
+    // Uses EIP-712 signature scheme.
 
     function permit(
         address owner,
@@ -133,5 +139,39 @@ abstract contract ERC20 {
                     address(this)
                 )
             );
+    }
+    function _mint(address to, uint256 amount) internal virtual {
+        require(to != address(0), "Mint to the zero address");
+
+        totalSupply += amount;
+        balanceOf[to] += amount;
+
+        emit Transfer(address(0), to, amount);
+    }
+    /// @notice Burns `amount` tokens from `from`, reducing the total supply.
+
+    function _burn(address from, uint256 amount) internal virtual {
+        require(from != address(0), "Burn from the zero address");
+
+        balanceOf[from] -= amount;
+        totalSupply -= amount;
+
+        emit Transfer(from, address(0), amount);
+    }
+}
+
+contract ERC20Permit is ERC20 {
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        uint8 _decimals
+    ) ERC20(_name, _symbol, _decimals) {}
+
+    function mint(address to, uint256 amount) external {
+        _mint(to, amount);
+    }
+
+    function burn(address from, uint256 amount) external {
+        _burn(from, amount);
     }
 }
