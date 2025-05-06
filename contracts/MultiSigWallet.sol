@@ -190,6 +190,7 @@ contract MultiSigWallet {
     {
         Transaction storage transaction = transactions[_txIndex];
 
+
         return (
             transaction.To,
             transaction.value,
