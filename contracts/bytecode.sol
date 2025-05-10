@@ -1,5 +1,5 @@
-""// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.26;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
 
 /*
  * @title Factory Contract
@@ -76,4 +76,3 @@ interface IContract {
  * - PUSH1 0x16                    -> Specifies the start position of the runtime code
  * - RETURN                        -> Returns the runtime code from memory
  */
-""
